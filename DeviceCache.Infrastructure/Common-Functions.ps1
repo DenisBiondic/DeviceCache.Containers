@@ -2,44 +2,44 @@
 #Requires -Module AzureRM.Resources
 
 Function CreateResourceGroupIfNotPresent([string]$ResourceGroupName, [string]$ResourceGroupLocation) {
-	$resourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
-	if(!$resourceGroup) {
-		Write-Host "Creating resource group '$ResourceGroupName' in location '$ResourceGroupLocation'";
-		New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation
-	} else {
-		Write-Host "Using existing resource group '$ResourceGroupName'";
-	}
+    $resourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
+    if(!$resourceGroup) {
+        Write-Host "Creating resource group '$ResourceGroupName' in location '$ResourceGroupLocation'";
+        New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation
+    } else {
+        Write-Host "Using existing resource group '$ResourceGroupName'"
+    }
 }
 
 Function DeployTemplate([string]$ResourceGroupName, [string]$TemplateFileFullPath, [Hashtable]$TemplateParameters, [switch]$ValidateOnly) {
-	if ($ValidateOnly) {
-		$ErrorMessages = Format-ValidationOutput (Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName `
-										-TemplateFile $TemplateFileFullPath `
-										@TemplateParameters)
+    if ($ValidateOnly) {
+        $ErrorMessages = Format-ValidationOutput (Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName `
+                            -TemplateFile $TemplateFileFullPath `
+                            @TemplateParameters)
 
-	   if ($ErrorMessages) {
-			Write-Output '', 'Validation returned the following errors:', @($ErrorMessages), '', 'Template is invalid.'
+       if ($ErrorMessages) {
+            Write-Output '', 'Validation returned the following errors:', @($ErrorMessages), '', 'Template is invalid.'
             throw 'Template validation failed'
-		}
-		else {
-			Write-Output '', 'Template is valid.'
-		}
-	}
-	else {
-		$TemplateFileName = Split-Path $TemplateFileFullPath -leaf
-		$DeploymentName = $TemplateFileName + '-' + ((Get-Date).ToUniversalTime()).ToString('MMdd-HHmm') 
+        }
+        else {
+            Write-Output '', 'Template is valid.'
+        }
+    }
+    else {
+        $TemplateFileName = Split-Path $TemplateFileFullPath -leaf
+        $DeploymentName = $TemplateFileName + '-' + ((Get-Date).ToUniversalTime()).ToString('MMdd-HHmm') 
 
-		New-AzureRmResourceGroupDeployment -Name $DeploymentName `
-										   -ResourceGroupName $ResourceGroupName `
-										   -TemplateFile $TemplateFileFullPath `
-										   @TemplateParameters `
-										   -Force -Verbose `
-										   -ErrorVariable ErrorMessages
-		if ($ErrorMessages) {
-			Write-Output '', 'Template deployment returned the following errors:', @(@($ErrorMessages) | ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
+        New-AzureRmResourceGroupDeployment -Name $DeploymentName `
+                                           -ResourceGroupName $ResourceGroupName `
+                                           -TemplateFile $TemplateFileFullPath `
+                                           @TemplateParameters `
+                                           -Force -Verbose `
+                                           -ErrorVariable ErrorMessages
+        if ($ErrorMessages) {
+            Write-Output '', 'Template deployment returned the following errors:', @(@($ErrorMessages) | ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
             throw 'Template deployment failed'
-		}
-	}
+        }
+    }
 }
 
 Function Create-KeyVault([string]$KeyVaultName, [string]$ResourceGroupName, [string]$ResourceGroupLocation) {
