@@ -1,0 +1,143 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "EnvironmentTag": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "keyVaultApiVersion": "2015-06-01",
+    "keyVaultName": "[concat('ca-devcache-', parameters('environmentTag'))]",
+
+    "eventHubApiVersion": "2015-08-01",
+    "namespaceName": "[concat('ca-devcache-', parameters('environmentTag'), '-namespace')]",
+    "eventHubName": "[concat('ca-devcache-', parameters('environmentTag'), '-hub')]",
+    "eventHubSendConnectionStringKeyName": "eventHubSendConnectionString",
+    "eventHubReceiveConnectionStringKeyName": "eventHubReceiveConnectionString",
+    "sendRuleName": "sendRule",
+    "receiveRuleName": "receiveRule", 
+    "sendAuthRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('namespaceName'), variables('eventHubName'), variables('sendRuleName'))]",
+    "receiveAuthRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('namespaceName'), variables('eventHubName'), variables('receiveRuleName'))]",
+    
+    "storageApiVersion": "2016-01-01",
+    "consumerCoordinationStorage": "[concat('cadevcache', parameters('environmentTag'), 'storage')]",
+    "storageSecretKeyName": "storageConnection"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('eventHubApiVersion')]",
+      "name": "[variables('namespaceName')]",
+      "type": "Microsoft.EventHub/Namespaces",
+      "tags": { "displayName": "Event Hub namespace & hub" },
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard",
+        "capacity": 20
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('eventHubApiVersion')]",
+          "name": "[variables('eventHubName')]",
+          "type": "EventHubs",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'))]"
+          ],
+          "properties": {
+            "path": "[variables('eventHubName')]",
+            "MessageRetentionInDays": "1",
+            "PartitionCount": 20 
+          },
+          "resources": [
+            {
+              "apiVersion": "[variables('eventHubApiVersion')]",
+              "name": "devcacheConsumers",
+              "type": "ConsumerGroups",
+              "dependsOn": [
+                "[variables('eventHubName')]"
+              ]
+            },
+            {
+              "type": "authorizationRules",
+              "name": "[variables('receiveRuleName')]",
+              "apiVersion": "[variables('eventHubApiVersion')]",
+              "properties": {
+                "rights": [
+                  "Listen"
+                ]
+              },
+              "resources": [],
+              "dependsOn": [
+                "[variables('eventHubName')]"
+              ]
+            },
+            {
+              "type": "authorizationRules",
+              "name": "[variables('sendRuleName')]",
+              "apiVersion": "[variables('eventHubApiVersion')]",
+              "properties": {
+                "rights": [
+                  "Send"
+                ]
+              },
+              "resources": [],
+              "dependsOn": [
+                "[variables('eventHubName')]"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('consumerCoordinationStorage')]",
+      "tags": { "displayName": "Consumer coordination storage" },
+      "apiVersion": "[variables('storageApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "name": "[concat(variables('keyVaultName'), '/', variables('consumerCoordinationStorage'))]",
+      "tags": { "displayName": "Storage secret entry in key vault" },
+      "properties": {
+        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('consumerCoordinationStorage')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('consumerCoordinationStorage'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "name": "[concat(variables('keyVaultName'), '/', variables('eventHubSendConnectionStringKeyName'))]",
+      "tags": { "displayName": "Event hub send connection string secret entry in key vault" },
+      "properties": {
+        "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('eventHubApiVersion')).primaryConnectionString]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "name": "[concat(variables('keyVaultName'), '/', variables('eventHubReceiveConnectionStringKeyName'))]",
+      "tags": { "displayName": "Event hub receive connection string secret entry in key vault" },
+      "properties": {
+        "value": "[listkeys(variables('receiveAuthRuleResourceId'), variables('eventHubApiVersion')).primaryConnectionString]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'))]"
+      ]
+    }
+  ],
+  "outputs": {}
+}
