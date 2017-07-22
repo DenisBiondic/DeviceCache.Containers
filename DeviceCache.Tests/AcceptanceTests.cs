@@ -1,4 +1,7 @@
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
@@ -6,25 +9,46 @@ namespace DeviceCache.Tests
 {
     public class AcceptanceTests
     {
+        private readonly HttpClient _httpClient;
+        
         public AcceptanceTests()
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("test-settings.json");
 
-            Configuration = builder.Build();
+            var configuration = builder.Build();
+
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(configuration["frontendEndpoint"])
+            };
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         [Fact]
-        public void ShouldReadCachedDataSentFromDevice()
+        public async Task ShouldReadCachedDataSentFromDevice()
         {
-            // Arrange
-
             // Act
-            throw new NotImplementedException();
+            var response = await GetDataFromCache();
 
             // Assert
+            response.Should().Contain("Works");
+        }
+
+        [Fact]
+        public async Task ShouldNotFindNeverSentDataInTheCache()
+        {
+            // Act
+            var response = await GetDataFromCache();
+
+            // Assert
+            response.Should().NotContain(Guid.NewGuid().ToString());
+        }
+
+        private async Task<string> GetDataFromCache()
+        {
+            var response = await _httpClient.GetAsync("api/data");
+            var responseJson = await response.Content.ReadAsStringAsync();
+            return responseJson;
         }
     }
 }

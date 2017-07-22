@@ -1,4 +1,4 @@
 {
-    "eventHubConnectionString": "not_provided",
-    "frontendEndpoint": "not_provided"
+  "eventHubConnectionString": "not_provided",
+  "frontendEndpoint": "http://localhost:59014"
 }
