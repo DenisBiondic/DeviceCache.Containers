@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "EnvironmentTag": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "keyVaultApiVersion": "2015-06-01",
+    "keyVaultName": "[concat('ca-devcache-', parameters('environmentTag'))]",
+
+    "containerRegistryApiVersion": "2017-03-01",
+    "registryImagesStorage": "[concat('cadevcache', parameters('EnvironmentTag'), 'images')]",
+    "registryName": "[concat('cadevcache', parameters('EnvironmentTag'), 'registry')]",
+
+    "registryAdminUsernameSecret": "registryAdminUsername",
+    "registryAdminPasswordSecret": "registryAdminPassword"
+  },
+  "resources": [
+    {
+      "name": "[variables('registryImagesStorage')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-12-01",
+      "tags": {
+        "containerregistry": "[variables('registryName')]",
+        "displayName": "registry images storage"
+      },
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {
+        "encryption": {
+          "services": {
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        }
+      }
+    },
+    {
+      "name": "[variables('registryName')]",
+      "type": "Microsoft.ContainerRegistry/registries",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "registry"
+      },
+      "apiVersion": "[variables('containerRegistryApiVersion')]",
+      "sku": {
+        "name": "Basic"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('registryImagesStorage'))]"
+      ],
+      "properties": {
+        "adminUserEnabled": true,
+        "storageAccount": {
+          "name": "[variables('registryImagesStorage')]",
+          "accessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('registryImagesStorage')), '2016-12-01').keys[0].value]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "name": "[concat(variables('keyVaultName'), '/', variables('registryAdminUsernameSecret'))]",
+      "tags": { "displayName": "Registry admin username secret entry in key vault" },
+      "properties": {
+        "value": "[variables('registryName')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "name": "[concat(variables('keyVaultName'), '/', variables('registryAdminPasswordSecret'))]",
+      "tags": { "displayName": "Registry admin password secret entry in key vault" },
+      "properties": {
+        "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),variables('containerRegistryApiVersion')).passwords[0].value]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.ContainerRegistry/registries/', variables('registryName'))]"
+      ]
+    }
+  ],
+  "outputs": {}
+}

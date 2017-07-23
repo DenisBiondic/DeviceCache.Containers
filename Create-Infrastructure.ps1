@@ -30,6 +30,7 @@ $resourceGroupName = "ca-devcache-$EnvironmentTag-rg"
 CreateResourceGroupIfNotPresent -resourceGroupName $ResourceGroupName -resourceGroupLocation $ResourceGroupLocation
 
 $eventHubTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Infrastructure/EventHub.json"))
+$registryTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Infrastructure/Registry.json"))
 $clusterTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Infrastructure/Cluster.json"))
 
 $automationKeyVaultName = "ca-automation-$EnvironmentTag"
@@ -46,6 +47,11 @@ $eventHubTemplateParameters = New-Object -TypeName Hashtable
 $eventHubTemplateParameters["EnvironmentTag"] = $EnvironmentTag
 
 DeployTemplate -ResourceGroupName $resourceGroupName -TemplateFileFullPath $eventHubTemplateFile -TemplateParameters $eventHubTemplateParameters
+
+$registryTemplateParameters = New-Object -TypeName Hashtable
+$registryTemplateParameters["EnvironmentTag"] = $EnvironmentTag
+
+DeployTemplate -ResourceGroupName $resourceGroupName -TemplateFileFullPath $registryTemplateFile -TemplateParameters $registryTemplateParameters
 
 if (-not $SkipCluster) {
     $clusterManagerId = (Get-AzureKeyVaultSecret -VaultName $automationKeyVaultName -SecretName servicePrincipalId).SecretValueText

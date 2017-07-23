@@ -16,9 +16,6 @@
     }
   },
   "variables": {
-    "registryImagesStorage": "[concat('cadevcache', parameters('EnvironmentTag'), 'images')]",
-    "registryName": "[concat('cadevcache', parameters('EnvironmentTag'), 'registry')]",
-
     "linuxVmAdminUser": "coffeepot",
 
     "orchestratorEngine": "Kubernetes",
@@ -43,52 +40,6 @@
     ]
   },
   "resources": [
-    {
-      "name": "[variables('registryImagesStorage')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-12-01",
-      "tags": {
-        "containerregistry": "[variables('registryName')]",
-        "displayName": "registry images storage"
-      },
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "Storage",
-      "properties": {
-        "encryption": {
-          "services": {
-            "blob": {
-              "enabled": true
-            }
-          },
-          "keySource": "Microsoft.Storage"
-        }
-      }
-    },
-    {
-      "name": "[variables('registryName')]",
-      "type": "Microsoft.ContainerRegistry/registries",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "displayName": "registry"
-      },
-      "apiVersion": "2017-03-01",
-      "sku": {
-        "name": "Basic"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('registryImagesStorage'))]"
-      ],
-      "properties": {
-        "adminUserEnabled": false,
-        "storageAccount": {
-          "name": "[variables('registryImagesStorage')]",
-          "accessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('registryImagesStorage')), '2016-12-01').keys[0].value]"
-        }
-      }
-    },
     {
       "apiVersion": "2016-09-30",
       "type": "Microsoft.ContainerService/containerServices",

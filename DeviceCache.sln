@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E64BF5A2-D8BC-433F-9C4B-3896A9490B3C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Build-Containers.ps1 = Build-Containers.ps1
+		Create-Infrastructure.ps1 = Create-Infrastructure.ps1
+		Create-Prerequisites.ps1 = Create-Prerequisites.ps1
 		README.md = README.md
 	EndProjectSection
 EndProject
