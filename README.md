@@ -10,7 +10,17 @@ Implemented scenario showcases handling events from Event Hubs and storing the l
 
 **Editor**: Visual Studio 2017 / Visual Studio Code
 
-**Azure powershell**: https://github.com/Azure/azure-powershell/releases<br/>(optional) **Azure CLI 2.0**
+**Azure powershell**: https://github.com/Azure/azure-powershell/releases
+
+**Kubectl**: https://kubernetes.io/docs/tasks/tools/install-kubectl/
+
+**Helm**: https://github.com/kubernetes/helm/blob/master/docs/install.md
+
+## Recommended Software:
+
+**Minikube** (for local development): https://github.com/kubernetes/minikube
+
+**Azure CLI 2.0**
 
 ## Infrastructure Setup
 

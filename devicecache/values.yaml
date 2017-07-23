@@ -1,0 +1,3 @@
+global:
+  imageRepository: should_be_overriden
+  imagePullSecret: devicecache-registry

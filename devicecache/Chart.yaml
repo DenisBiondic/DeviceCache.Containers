@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Chart containing complete DeviceCache project.
+name: devicecache
+version: 0.1.0

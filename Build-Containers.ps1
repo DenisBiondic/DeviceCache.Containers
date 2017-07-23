@@ -27,7 +27,7 @@ $registryUrl = ("cadevcache" + $EnvironmentTag + "registry.azurecr.io")
 
 docker login $registryUrl -u $registryUsername -p $registryPassword
 
-$frontEndContainerTag = "devcache-frontend:$VersionTag"
+$frontEndContainerTag = "devicecache-frontend:$VersionTag"
 Write-Host "`r`n[BUILD CONTAINER] Building $frontEndContainerTag container" -foreground "green"
  
 $frontendContext = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Frontend"))
