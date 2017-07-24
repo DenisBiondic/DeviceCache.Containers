@@ -22,8 +22,8 @@ $keyVaultName = "ca-devcache-$EnvironmentTag"
 $recieveConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubReceiveConnectionString).SecretValueText
 $sendConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubSendConnectionString).SecretValueText
 $storageAccountKey = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName cadevcachegreenstorage).SecretValueText
-$storageAccountName = ("cpdevcache" + $EnvironmentTag + "storage")
-$eventHubReaderPath = "cp-devcache-$EnvironmentTag-hub"
+$storageAccountName = ("cadevcache" + $EnvironmentTag + "storage")
+$eventHubReaderPath = "ca-devcache-$EnvironmentTag-hub"
 
 helm install ./devicecache --set global.imageRepository=$registryUrl `
 	--set eventHubReaderConnectionString=$recieveConnectionString `
