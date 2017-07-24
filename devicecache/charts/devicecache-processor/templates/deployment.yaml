@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: {{ .Chart.Name }}
+    labels:
+        app: {{ .Chart.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: processor
+spec:
+    replicas: {{ .Values.replicas }}
+    template:
+        metadata:
+            name: {{ .Chart.Name }}
+            labels:
+                app: {{ .Chart.Name }}
+                release: {{ .Release.Name }}
+        spec:
+            containers:
+              - name: {{ .Chart.Name }}
+                image: "{{ .Values.global.imageRepository }}/{{ .Chart.Name }}:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: EVENTHUB_READER_CONNECTION_STRING
+                    valueFrom:
+                        secretKeyRef:
+                            name: {{ .Values.global.mainChartName }}
+                            key: eventHubReaderConnectionString
+                  - name: EVENTHUB_READER_PATH
+                    valueFrom:
+                        secretKeyRef:
+                            name: {{ .Values.global.mainChartName }}
+                            key: eventHubReaderPath
+                  - name: STORAGE_ACCOUNT_NAME
+                    valueFrom:
+                        secretKeyRef:
+                            name: {{ .Values.global.mainChartName }}
+                            key: storageAccountName
+                  - name: STORAGE_ACCOUNT_KEY
+                    valueFrom:
+                        secretKeyRef:
+                            name: {{ .Values.global.mainChartName }}
+                            key: storageAccountKey
+            imagePullSecrets:
+              - name: {{ .Values.global.imagePullSecret }}

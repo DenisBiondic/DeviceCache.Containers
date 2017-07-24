@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: {{ .Chart.Name }}
+    labels:
+        app: {{ .Chart.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: simulator
+spec:
+    replicas: {{ .Values.replicas }}
+    template:
+        metadata:
+            name: {{ .Chart.Name }}
+            labels:
+                app: {{ .Chart.Name }}
+                release: {{ .Release.Name }}
+        spec:
+            containers:
+              - name: {{ .Chart.Name }}
+                image: "{{ .Values.global.imageRepository }}/{{ .Chart.Name }}:latest"
+                imagePullPolicy: Always                
+                env:
+                  - name: EVENTHUB_SENDER_CONNECTION_STRING
+                    valueFrom:
+                        secretKeyRef:
+                            name: {{ .Values.global.mainChartName }}
+                            key: eventHubSenderConnectionString
+            imagePullSecrets:
+              - name: {{ .Values.global.imagePullSecret }}

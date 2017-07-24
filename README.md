@@ -1,6 +1,6 @@
 # Device Cache - Containers
 
-Simple .NET microservice application based on Microsoft Azure, Kubernetes (Azure Container Service), Helm & Powershell
+Simple .NET Core microservice application based on Microsoft Azure, Kubernetes (Azure Container Service), Helm & Powershell
 
 Follows the [12 Factor App](https://12factor.net/) approach and is built using cloud-native principle of [CaaS](http://blog.kubernetes.io/2017/02/caas-the-foundation-for-next-gen-paas.html) for stateless services (Kubernetes) and **PaaS** for stateful workloads (in this case Azure EventHub)
 

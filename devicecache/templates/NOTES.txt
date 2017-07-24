@@ -1,1 +1,1 @@
-DeviceCache
+DeviceCache sample .NET Core microservices project

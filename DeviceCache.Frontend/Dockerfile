@@ -1,7 +1,8 @@
 FROM microsoft/aspnetcore-build:1.1.2 as build
+COPY DeviceCache.Frontend.csproj /sources/DeviceCache.Frontend.csproj
 WORKDIR /sources
-COPY . /sources
 RUN dotnet restore
+COPY . /sources
 RUN dotnet publish -c release --output publish/DeviceCache.Frontend
 
 FROM microsoft/aspnetcore:1.1.2

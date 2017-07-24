@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Chart for the simulator part of DeviceCache project
+name: devicecache-simulator
+version: 0.1.0

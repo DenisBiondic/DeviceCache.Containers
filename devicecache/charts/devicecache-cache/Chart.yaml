@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Chart for the cache (redis) part of DeviceCache project
+name: devicecache-cache
+version: 0.1.0

@@ -13,6 +13,26 @@ Param(
 $ErrorActionPreference = 'Stop'
 
 #******************************************************************************
+# Functions
+#******************************************************************************
+
+Function Build-Container([string]$ContainerTag, [string]$BuildContextFolderName, [string]$RegistryUrl) {
+    Write-Host "`r`n[BUILD CONTAINER] Building $ContainerTag container..." -foreground "green"
+
+    $buildContext = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $BuildContextFolderName))
+    $dockerfile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "$BuildContextFolderName/Dockerfile"))
+
+    docker build -t $ContainerTag -f $dockerfile $buildContext
+    docker tag $ContainerTag $registryUrl/$ContainerTag
+
+    Write-Host "[PUSH TO REPOSITORY] Pushing $ContainerTag container to $RegistryUrl..." -foreground "green"
+
+    docker push $RegistryUrl/$ContainerTag
+
+    Write-Host "[FINISHED] Finished building $ContainerTag container" -foreground "green"
+}
+
+#******************************************************************************
 # Script body
 #******************************************************************************
 
@@ -27,17 +47,6 @@ $registryUrl = ("cadevcache" + $EnvironmentTag + "registry.azurecr.io")
 
 docker login $registryUrl -u $registryUsername -p $registryPassword
 
-$frontEndContainerTag = "devicecache-frontend:$VersionTag"
-Write-Host "`r`n[BUILD CONTAINER] Building $frontEndContainerTag container" -foreground "green"
- 
-$frontendContext = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Frontend"))
-$frontendDockerfile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Frontend/Dockerfile"))
-
-docker build -t $frontEndContainerTag -f $frontendDockerfile $frontendContext
-docker tag $frontEndContainerTag $registryUrl/$frontEndContainerTag
-
-Write-Host "[PUSH TO REPOSITORY] Pushing $frontEndContainerTag container to $registryUrl" -foreground "green"
-
-docker push $registryUrl/$frontEndContainerTag
-
-Write-Host "[FINISHED] Building $frontEndContainerTag container" -foreground "green"
+Build-Container -ContainerTag "devicecache-frontend:$VersionTag" -BuildContextFolderName "DeviceCache.Frontend" -RegistryUrl $registryUrl
+Build-Container -ContainerTag "devicecache-processor:$VersionTag" -BuildContextFolderName "DeviceCache.Processor" -RegistryUrl $registryUrl
+Build-Container -ContainerTag "devicecache-simulator:$VersionTag" -BuildContextFolderName "DeviceCache.Simulator" -RegistryUrl $registryUrl

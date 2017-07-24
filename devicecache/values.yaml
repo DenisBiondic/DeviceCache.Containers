@@ -1,3 +1,10 @@
+storageAccountName: should_be_overriden
+storageAccountKey: should_be_overriden
+eventHubReaderPath: should_be_overriden
+eventHubReaderConnectionString: should_be_overriden
+eventHubSenderConnectionString: should_be_overriden
+
 global:
+  mainChartName: devicecache
   imageRepository: should_be_overriden
   imagePullSecret: devicecache-registry

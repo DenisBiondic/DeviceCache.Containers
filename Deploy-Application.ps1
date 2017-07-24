@@ -1,9 +1,9 @@
 #Requires -Version 3.0
 
 Param(
- [Parameter(Mandatory=$True)]
- [string]
- $EnvironmentTag
+	[Parameter(Mandatory=$True)]
+	[string]
+	$EnvironmentTag
 )
 
 # stop the script on first error
@@ -17,4 +17,17 @@ Write-Host "Deploying the application..."
 
 $registryUrl = ("cadevcache" + $EnvironmentTag + "registry.azurecr.io")
 
-helm install ./devicecache --set global.imageRepository=$registryUrl
+$keyVaultName = "ca-devcache-$EnvironmentTag"
+
+$recieveConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubReceiveConnectionString).SecretValueText
+$sendConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubSendConnectionString).SecretValueText
+$storageAccountKey = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName cadevcachegreenstorage).SecretValueText
+$storageAccountName = ("cpdevcache" + $EnvironmentTag + "storage")
+$eventHubReaderPath = "cp-devcache-$EnvironmentTag-hub"
+
+helm install ./devicecache --set global.imageRepository=$registryUrl `
+	--set eventHubReaderConnectionString=$recieveConnectionString `
+	--set eventHubSenderConnectionString=$sendConnectionString `
+	--set storageAccountName=$storageAccountName `
+	--set storageAccountKey=$storageAccountKey `
+	--set eventHubReaderPath=$eventHubReaderPath

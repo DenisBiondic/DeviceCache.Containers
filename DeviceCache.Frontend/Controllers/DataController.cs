@@ -9,7 +9,7 @@ namespace DeviceCache.Frontend.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new[] { "Works", "Works too!" };
+            return new[] { "Works", "Works too!", "Works as well" };
         }
     }
 }
