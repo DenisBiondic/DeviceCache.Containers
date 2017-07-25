@@ -6,10 +6,6 @@ Follows the [12 Factor App](https://12factor.net/) approach and is built using c
 
 Implemented scenario showcases handling events from Event Hubs and storing the last information recieved (common IoT cloud use case) into a cache (Redis) available for querying (high performance / throughput scenario / feature) - kind of a CQRS thing for IoT :)
 
-## Architecture
-
-![Kiku](docs/architecture.png)
-
 ## Setup instructions and general how-to
 
 [Setup & first run](docs/setup.md)
@@ -17,3 +13,7 @@ Implemented scenario showcases handling events from Event Hubs and storing the l
 ## Roadmap
 
 [Finished and planned features](docs/roadmap.md)
+
+## Architecture
+
+![Kiku](docs/architecture.png)
