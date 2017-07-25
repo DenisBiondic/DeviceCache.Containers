@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceCache.Tests", "DeviceCache.Tests\DeviceCache.Tests.csproj", "{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}"
-EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "DeviceCache.Infrastructure", "DeviceCache.Infrastructure\DeviceCache.Infrastructure.deployproj", "{495E95AA-552B-480D-AA47-5ADC0E7DA3EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E64BF5A2-D8BC-433F-9C4B-3896A9490B3C}"
@@ -30,14 +28,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Debug|x64.ActiveCfg = Debug|x64
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Debug|x64.Build.0 = Debug|x64
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Release|x64.ActiveCfg = Release|x64
-		{5DABE7C9-DC74-46C7-9726-BC47973E2C2A}.Release|x64.Build.0 = Release|x64
 		{495E95AA-552B-480D-AA47-5ADC0E7DA3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{495E95AA-552B-480D-AA47-5ADC0E7DA3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{495E95AA-552B-480D-AA47-5ADC0E7DA3EE}.Debug|x64.ActiveCfg = Debug|x64

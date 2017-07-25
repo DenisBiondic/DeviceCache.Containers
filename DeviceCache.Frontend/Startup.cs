@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceStack.Redis;
 
 namespace DeviceCache.Frontend
 {
@@ -25,6 +26,9 @@ namespace DeviceCache.Frontend
         {
             // Add framework services.
             services.AddMvc();
+
+            var manager = new RedisManagerPool("devicecache-cache:6379");
+            services.AddSingleton(manager);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

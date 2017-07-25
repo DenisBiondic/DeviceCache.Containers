@@ -1,3 +1,5 @@
+Current state: unstable
+
 # Device Cache - Containers
 
 Simple .NET Core microservice application based on Microsoft Azure, Kubernetes (Azure Container Service), Helm & Powershell.

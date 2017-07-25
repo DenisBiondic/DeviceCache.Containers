@@ -10,9 +10,9 @@
 
 ~~Redis cache~~
 
-Frontend / reading from cache (in progress)
+~~Frontend / reading from cache~~
 
-Start to finish documentation with commands
+Start to finish documentation with commands (in progress)
 
 Prometheus / Grafana instance
 
