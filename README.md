@@ -1,4 +1,4 @@
-Current state: unstable
+Current state: stable but undocumented
 
 # Device Cache - Containers
 
