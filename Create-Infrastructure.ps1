@@ -33,13 +33,6 @@ $eventHubTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine(
 $registryTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Infrastructure/Registry.json"))
 $clusterTemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "DeviceCache.Infrastructure/Cluster.json"))
 
-$automationKeyVaultName = "ca-automation-$EnvironmentTag"
-$automationKeyVault = Get-AzureRmKeyVault -VaultName $automationKeyVaultName -ErrorAction SilentlyContinue
-
-if (-not $automationKeyVault) {
-    throw "Automation key vault not found. Make sure you run the Create-Prerequisites.ps1 script first."
-}
-
 $keyVaultName = "ca-devcache-$EnvironmentTag"
 Create-KeyVault -KeyVaultName $keyVaultName -ResourceGroupName $resourceGroupName -ResourceGroupLocation $ResourceGroupLocation
 
@@ -54,6 +47,13 @@ $registryTemplateParameters["EnvironmentTag"] = $EnvironmentTag
 DeployTemplate -ResourceGroupName $resourceGroupName -TemplateFileFullPath $registryTemplateFile -TemplateParameters $registryTemplateParameters
 
 if (-not $SkipCluster) {
+    $automationKeyVaultName = "ca-automation-$EnvironmentTag"
+    $automationKeyVault = Get-AzureRmKeyVault -VaultName $automationKeyVaultName -ErrorAction SilentlyContinue
+
+    if (-not $automationKeyVault) {
+        throw "Automation key vault required for the cluster not found. Make sure you run the Create-CloudClusterPrerequisites script first."
+    }
+
     $clusterManagerId = (Get-AzureKeyVaultSecret -VaultName $automationKeyVaultName -SecretName servicePrincipalId).SecretValueText
     $clusterManagerKey = (Get-AzureKeyVaultSecret -VaultName $automationKeyVaultName -SecretName servicePrincipalPassword).SecretValue
     $sshPublicKey = (Get-AzureKeyVaultSecret -VaultName $automationKeyVaultName -SecretName machineSshPublicKey).SecretValueText

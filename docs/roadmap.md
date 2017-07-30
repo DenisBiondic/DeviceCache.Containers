@@ -1,3 +1,5 @@
+# Roadmap
+
 ~~Infrastructure incl. scripting~~
 
 ~~Packaging / parametrization with Helm~~
@@ -14,6 +16,6 @@
 
 Start to finish documentation with commands (in progress)
 
-Prometheus / Grafana instance
+Prometheus / Grafana instance (in progress)
 
 Exposing load metrics from services

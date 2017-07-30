@@ -23,11 +23,25 @@ Function Build-Container([string]$ContainerTag, [string]$BuildContextFolderName,
     $dockerfile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "$BuildContextFolderName/Dockerfile"))
 
     docker build -t $ContainerTag -f $dockerfile $buildContext
+
+    if ($LastExitCode -ne 0) {
+        throw "Could not build the image $ContainerTag from file: $dockerfile for context: $buildContext"
+    }
+
     docker tag $ContainerTag $registryUrl/$ContainerTag
+
+    if ($LastExitCode -ne 0) {
+        throw "Could not tag the image $ContainerTag for $registryUrl/$ContainerTag"
+    }
 
     Write-Host "[PUSH TO REPOSITORY] Pushing $ContainerTag container to $RegistryUrl..." -foreground "green"
 
     docker push $RegistryUrl/$ContainerTag
+
+    if ($LastExitCode -ne 0) {
+        throw "Could not push the image $RegistryUrl/$ContainerTag"
+    }
+
 
     Write-Host "[FINISHED] Finished building $ContainerTag container" -foreground "green"
 }
@@ -46,6 +60,10 @@ $registryPassword = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretNam
 $registryUrl = ("cadevcache" + $EnvironmentTag + "registry.azurecr.io")
 
 docker login $registryUrl -u $registryUsername -p $registryPassword
+
+if ($LastExitCode -ne 0) {
+    throw "Could not login to the docker registry"
+}
 
 Build-Container -ContainerTag "devicecache-frontend:$VersionTag" -BuildContextFolderName "DeviceCache.Frontend" -RegistryUrl $registryUrl
 Build-Container -ContainerTag "devicecache-processor:$VersionTag" -BuildContextFolderName "DeviceCache.Processor" -RegistryUrl $registryUrl
