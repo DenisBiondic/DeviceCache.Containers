@@ -6,6 +6,8 @@
 
 **Azure powershell**: https://github.com/Azure/azure-powershell/releases
 
+**Docker** (e.g. for windows: https://docs.docker.com/docker-for-windows/)
+
 **Kubectl**: https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
 **Helm**: https://github.com/kubernetes/helm/blob/master/docs/install.md
