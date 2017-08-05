@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.2" />
-    <PackageReference Include="ServiceStack.Redis.Core" Version="1.0.43" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
   </ItemGroup>
 
   <ItemGroup>

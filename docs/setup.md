@@ -56,10 +56,10 @@ Select-AzureRmSubscription
 You can execute the `Create-Infrastructure.ps1` script now. In case if you will be working with a local cluster (e.g. minikube), run the following:
 
 ```powershell
-.\Create-Infrastructure.ps1 -EnvironmentTag <<set_tag_here>> -SkipCluster
+.\Create-Infrastructure.ps1 -EnvironmentTag <<set_tag_here>> -SkipClusterInCloud
 ```
 
-If you are going to be using a cloud cluster (ACS), omit the -SkipCluster flag.
+If you are going to be using a cloud cluster (ACS), omit the -SkipClusterInCloud flag.
 
 ```powershell
 # make sure you execute the Create-CloudClusterPrerequisites.ps1 script first!

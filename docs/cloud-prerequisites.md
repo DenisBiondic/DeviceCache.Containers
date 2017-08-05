@@ -1,6 +1,6 @@
 # Prerequisites for cloud cluster deployment
 
-In case you will be also deploying a remote cluster with ACS (Create-Infrastructure.ps1 script without the -SkipCluster flag), you will need to setup some prerequisites for such deployment:
+In case you will be also deploying a remote cluster with ACS (Create-Infrastructure.ps1 script without the -SkipClusterInCloud flag), you will need to setup some prerequisites for such deployment:
 
 - Subscription admin service principal credentials (**you need to provide this**)
 - Public SSH key (**you need to provide this**)
@@ -21,7 +21,20 @@ You could also use some of the tools like **Bitvise** which are capable of creat
 
 ## Running the Create-CloudClusterPrerequisites.ps1 script
 
-First, execute this line to securely enter your credentials for the service principal:
+First, make sure you log in to your Azure Subscription with
+
+```powershell
+Login-AzureRmAccount
+```
+
+and, if necessary, switch to the correct subscription using
+
+```powershell
+# to find out the subscirption id, run Get-AzureRmSubscription
+Select-AzureRmSubscription
+```
+
+Execute this line to securely enter your credentials for the service principal:
 
 ```powershell
 $servicePrincipalCredentials = Get-Credential

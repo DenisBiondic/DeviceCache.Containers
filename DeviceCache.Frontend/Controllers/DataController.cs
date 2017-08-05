@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 
 namespace DeviceCache.Frontend.Controllers
 {
     [Route("api/[controller]")]
     public class DataController : Controller
     {
-        private readonly RedisManagerPool _manager;
+        private readonly ConnectionMultiplexer _redis;
 
-        public DataController(RedisManagerPool manager)
+        public DataController(ConnectionMultiplexer redis)
         {
-            _manager = manager;
+            _redis = redis;
         }
 
         [HttpGet]
         public IEnumerable<string> Get()
         {
             var random = new Random();
-            var keys = new List<string>();
+            var keys = new List<RedisKey>();
 
             for (int i = 0; i < 40; i++)
             {
@@ -27,11 +27,10 @@ namespace DeviceCache.Frontend.Controllers
                 keys.Add(randomKey.ToString());
             }
 
-            using (var client = _manager.GetClient())
-            {
-                var values = client.GetValues(keys);
-                return values;
-            }
+            IDatabase db = _redis.GetDatabase();
+            
+            var values = db.StringGet(keys.ToArray());
+            return values.ToStringArray();
         }
     }
 }

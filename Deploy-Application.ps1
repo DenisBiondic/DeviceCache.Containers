@@ -19,9 +19,11 @@ $registryUrl = ("cadevcache" + $EnvironmentTag + "registry.azurecr.io")
 
 $keyVaultName = "ca-devcache-$EnvironmentTag"
 
+$storageKeyName = ("cadevcache" + $EnvironmentTag + "storage")
+
 $recieveConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubReceiveConnectionString).SecretValueText
 $sendConnectionString = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName eventHubSendConnectionString).SecretValueText
-$storageAccountKey = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName cadevcachegreenstorage).SecretValueText
+$storageAccountKey = (Get-AzureKeyVaultSecret -VaultName $keyVaultName -SecretName $storageKeyName).SecretValueText
 $storageAccountName = ("cadevcache" + $EnvironmentTag + "storage")
 $eventHubReaderPath = "ca-devcache-$EnvironmentTag-hub"
 

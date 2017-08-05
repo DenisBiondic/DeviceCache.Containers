@@ -10,7 +10,7 @@ Param(
  $ResourceGroupLocation = "North Europe",
 
  [switch]
- $SkipCluster
+ $SkipClusterInCloud
 )
 
 # stop the script on first error
@@ -46,7 +46,7 @@ $registryTemplateParameters["EnvironmentTag"] = $EnvironmentTag
 
 DeployTemplate -ResourceGroupName $resourceGroupName -TemplateFileFullPath $registryTemplateFile -TemplateParameters $registryTemplateParameters
 
-if (-not $SkipCluster) {
+if (-not $SkipClusterInCloud) {
     $automationKeyVaultName = "ca-automation-$EnvironmentTag"
     $automationKeyVault = Get-AzureRmKeyVault -VaultName $automationKeyVaultName -ErrorAction SilentlyContinue
 

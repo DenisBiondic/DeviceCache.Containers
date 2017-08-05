@@ -48,7 +48,8 @@ namespace DeviceCache.Processor
 
             // Registers the Event Processor Host and starts receiving messages
             var eventProcessorOptions = EventProcessorOptions.DefaultOptions;
-            eventProcessorOptions.MaxBatchSize = 2000;
+            eventProcessorOptions.MaxBatchSize = 1000;
+            eventProcessorOptions.PrefetchCount = 1000;
             await eventProcessorHost.RegisterEventProcessorAsync<SimpleEventProcessor>(eventProcessorOptions);
             await Task.Delay(Timeout.Infinite);
         }

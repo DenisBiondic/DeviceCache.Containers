@@ -34,7 +34,7 @@
       "sku": {
         "name": "Standard",
         "tier": "Standard",
-        "capacity": 20
+        "capacity": 10
       },
       "resources": [
         {
@@ -55,7 +55,7 @@
               "name": "devcacheConsumers",
               "type": "ConsumerGroups",
               "dependsOn": [
-                "[variables('eventHubName')]"
+                "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'))]"
               ]
             },
             {
@@ -69,7 +69,7 @@
               },
               "resources": [],
               "dependsOn": [
-                "[variables('eventHubName')]"
+                "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'))]"
               ]
             },
             {
@@ -83,7 +83,8 @@
               },
               "resources": [],
               "dependsOn": [
-                "[variables('eventHubName')]"
+                "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'))]",
+                "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'), '/authorizationRules/', variables('receiveRuleName'))]"
               ]
             }
           ]
@@ -123,7 +124,7 @@
         "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('eventHubApiVersion')).primaryConnectionString]"
       },
       "dependsOn": [
-        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'))]"
+        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'), '/authorizationRules/', variables('sendRuleName'))]"
       ]
     },
     {
@@ -135,7 +136,7 @@
         "value": "[listkeys(variables('receiveAuthRuleResourceId'), variables('eventHubApiVersion')).primaryConnectionString]"
       },
       "dependsOn": [
-        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'))]"
+        "[concat('Microsoft.EventHub/namespaces/', variables('namespaceName'),'/EventHubs/',variables('eventHubName'), '/authorizationRules/', variables('receiveRuleName'))]"
       ]
     }
   ],
