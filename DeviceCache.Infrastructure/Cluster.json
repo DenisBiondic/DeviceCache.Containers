@@ -20,7 +20,7 @@
 
     "orchestratorEngine": "Kubernetes",
     "masterCount": 1,
-    "minionCount": 5,
+    "minionCount": 3,
     "minionMachineSize": "Standard_A2",
     
     "minionsEndpointDNSNamePrefix": "[concat(parameters('EnvironmentTag'),'minions')]",
